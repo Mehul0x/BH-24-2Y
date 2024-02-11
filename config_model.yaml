@@ -1,0 +1,13 @@
+bias: true
+in_channels1: 1
+kernel_size1:
+- 7
+- 2
+kernel_size2:
+- 4
+- 1
+number_of_functions: 2
+number_of_inputs: 2
+number_of_points: 50
+out_channels1: 16
+out_channels2: 32
