@@ -16,8 +16,12 @@ After correctly setting up my optuna, I got these results
 After this, I varied the parameters of the model and then optimized its hyperparameter, through a lot of iterations I got the best result
 ![image](https://github.com/Mehul0x/BH-24-2Y/assets/146676085/a0bcf9e6-a19e-4e4a-8a29-29c4f3db0d9c)
 ![image](https://github.com/Mehul0x/BH-24-2Y/assets/146676085/2ee27a0f-6cf3-460a-9e81-814455393f7a)
+
 This was the test loss on this iteration
 ![image](https://github.com/Mehul0x/BH-24-2Y/assets/146676085/e31aec06-5755-4b02-8497-93b2924ed703)
+
+The same architecture with different hyperparameters performed as
+![image](https://github.com/Mehul0x/BH-24-2Y/assets/146676085/4bd3aaf6-9da7-4c63-a73f-fa9f62a43441)
 
 I tried replacing a convolutional layer with a linear layer but the results had a significant drop, so I decided to add other convolution layers instead, I encountered some errors and time didn't permit me to fix them.
 
