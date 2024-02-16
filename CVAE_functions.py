@@ -47,11 +47,11 @@ def loss_function(recon_x, x, cond_data, mu, logvar, beta, wx, wy, fun_list):
     Nw = recon_x.size(-2)
     recon_cond_data = np.vstack([results_list]).T.reshape(len(cond_data), Nw*len(fun_list))
     recon_cond_data = torch.Tensor(np.array(recon_cond_data)).type(torch.float)    
-    # if torch.cuda.is_available():
-    #     recon_cond_data = recon_cond_data.cuda()
-    if torch.backends.mps.is_available():
-        recon_cond_data = recon_cond_data.to(torch.device('mps'))
-    recon_cond_data = recon_cond_data.to(torch.device('cuda')) #added this
+    if torch.cuda.is_available():
+        recon_cond_data = recon_cond_data.cuda()
+    # if torch.backends.mps.is_available():
+    #     recon_cond_data = recon_cond_data.to(torch.device('mps'))
+    # recon_cond_data = recon_cond_data.to(torch.device('cuda')) #added this
     y_loss =  recon_loss_fn(cond_data, recon_cond_data)
   
       
@@ -75,11 +75,11 @@ def train_cvae(cvae, train_loader, optimizer, beta, wx, wy, epoch, fun_list, ste
         # if torch.backends.mps.is_available():
         #     cond_data = cond_data.to(torch.device('mps'))
         #     data = data.to(torch.device('mps'))
-        cond_data = cond_data.to(torch.device('cuda'))
-        data = data.to(torch.device('cuda'))
-        # if torch.cuda.is_available():
-        #     cond_data = cond_data.cuda()
-        #     data = data.cuda()
+        # cond_data = cond_data.to(torch.device('cuda'))
+        # data = data.to(torch.device('cuda'))
+        if torch.cuda.is_available():
+            cond_data = cond_data.cuda()
+            data = data.cuda()
 
         # ===================forward=====================
         recon_data, z_mean, z_logvar = cvae(data, cond_data)
@@ -125,16 +125,16 @@ def test_cvae(cvae, test_loader, beta, wx, wy,fun_list):
         for batch_idx, (data, cond_data) in enumerate(test_loader):
             Nw = data.size(-2)
             cond_data =  torch.reshape(cond_data, (len(cond_data), Nw* len(fun_list)))
-            # if torch.cuda.is_available():
-            #     cond_data =  cond_data.cuda()
-            #     data = data.cuda()
-            #     cond_data = cond_data.cuda()
-            if torch.backends.mps.is_available():
-                cond_data = cond_data.to(torch.device('mps'))
-                data = data.to(torch.device('mps'))
+            if torch.cuda.is_available():
+                cond_data =  cond_data.cuda()
+                data = data.cuda()
+                cond_data = cond_data.cuda()
+            # if torch.backends.mps.is_available():
+            #     cond_data = cond_data.to(torch.device('mps'))
+            #     data = data.to(torch.device('mps'))
 
-            cond_data = cond_data.to(torch.device('cuda'))
-            data = data.to(torch.device('cuda'))
+            # cond_data = cond_data.to(torch.device('cuda'))
+            # data = data.to(torch.device('cuda'))
 
             recon_data, z_mean, z_logvar = cvae(data, cond_data)
 
@@ -160,12 +160,12 @@ def generate_samples(cvae, num_samples, given_y, input_shape, zmult = 1):
         for _ in range(num_samples):
             # Generate random latent vector
             z_rand = (torch.randn(*input_shape)*zmult)
-            # if torch.cuda.is_available():
-            #     z_rand = z_rand.cuda()
-            if torch.backends.mps.is_available():
-                z_rand = z_rand.to(torch.device('mps'))
+            if torch.cuda.is_available():
+                z_rand = z_rand.cuda()
+            # if torch.backends.mps.is_available():
+            #     z_rand = z_rand.to(torch.device('mps'))
 
-            z_rand = z_rand.to(torch.device('cuda')) #added this
+            # z_rand = z_rand.to(torch.device('cuda')) #added this
                 
             num_args = cvae.encoder.forward.__code__.co_argcount
             if num_args > 2 :

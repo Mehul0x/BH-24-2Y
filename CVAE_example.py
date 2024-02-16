@@ -23,7 +23,9 @@ out_channels1 = config["out_channels1"]
 kernel_size1 = config["kernel_size1"]
 out_channels2 = config["out_channels2"]
 kernel_size2 = config["kernel_size2"]
-#latent_dim = config["latent_dim"]
+out_channels3 = config["out_channels3"]
+kernel_size3 = config["kernel_size3"]
+# latent_dim = config["latent_dim"]
 
 # define the input dimensions
 input_shape = (1, number_of_points, 2)
@@ -36,6 +38,7 @@ class Encoder(nn.Module):
         
         self.conv1 = nn.Conv2d(in_channels1, out_channels1, kernel_size=kernel_size1, bias=bias )
         self.conv2 = nn.Conv2d(out_channels1, out_channels2, kernel_size=kernel_size2, bias=bias)
+        self.conv3 = nn.Conv2d(out_channels2, out_channels3, kernel_size=kernel_size3, bias=bias)
         self.fc1_mean = nn.Linear(out_channels2 * dimInt, latent_dim)
         self.fc1_logvar = nn.Linear(out_channels2 * dimInt, latent_dim)
 
@@ -43,6 +46,8 @@ class Encoder(nn.Module):
         x = F.relu(self.conv1(x))
         
         x = F.relu(self.conv2(x))
+
+        x = F.relu(self.conv3(x))
         
         x = x.view(x.size(0), -1)  # Flatten the feature map
        
@@ -70,9 +75,10 @@ class Decoder(nn.Module):
         with open("config_model.yaml", "r") as file:
             config = yaml.safe_load(file)
         number_of_functions = config["number_of_functions"]
-        self.fc1 = nn.LazyLinear(out_channels2 * dimInt)
-        self.conv_transpose1 = nn.ConvTranspose2d(out_channels2, out_channels1, kernel_size=kernel_size2, bias=bias)
-        self.conv_transpose2 = nn.ConvTranspose2d(out_channels1, in_channels1, kernel_size=kernel_size1, bias=bias)
+        self.fc1 = nn.LazyLinear(out_channels3 * dimInt)
+        self.conv_transpose1 = nn.ConvTranspose2d(out_channels3, out_channels2, kernel_size=kernel_size3, bias=bias)
+        self.conv_transpose2 = nn.ConvTranspose2d(out_channels2, out_channels1, kernel_size=kernel_size2, bias=bias)
+        self.conv_transpose3 = nn.ConvTranspose2d(out_channels1, in_channels1, kernel_size=kernel_size1, bias=bias)
         self.relu = nn.ReLU()
 
     def forward(self, z, cond):
@@ -83,8 +89,10 @@ class Decoder(nn.Module):
         x = torch.reshape(x, (batch_size, out_channels2, dimInt, 1))  # Reshape to (batch_size, channels, height, width)
         
         x = self.conv_transpose1(x)
-        
+
         x = self.conv_transpose2(x)
+        
+        x = self.conv_transpose3(x)
         
         x = self.relu(x)
         return x
