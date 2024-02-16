@@ -3,9 +3,22 @@ This is an application of a conditional Variational Autoencoder similar to the p
 
 The objective is to use a generative model to find new functions (x0 & x1) that can fit certain functions, like cos(4 x0 + 8 x1)
 
-The CVAE had the following hyperparameters "latent dimension, learning rate, batch size, beta, wx, wy"
-I chose to use optuna to optimize these hyperparameters.
+The obvious choices were to use a CVAE or a GAN, I chose to go with a CVAE, since and if time permits experiment with a GAN.
 
-A study is created with an objective with the goal of minimzing the objective, in this case, the total loss returned by the CVAE, represented as 
-total_loss = (beta * KLD + wx * x_loss + wy * y_loss).mean()
-Such a loss function is used because we want to minimize both the Kullback–Leibler divergence loss and the reconstructional loss to make sure the data is spread out in the latent space and segregated.
+Approaching the challenge in a structured challenge, I decided to first set up my hyperparameter tuning for the already given model, which would be useful in the future with any changes. 
+
+While setting up optuna I encountered some errors.
+
+After correctly setting up my optuna, I got these results
+![image](https://github.com/Mehul0x/BH-24-2Y/assets/146676085/e662f363-74fc-4ab6-a7c7-ee4986fe03df)
+![image](https://github.com/Mehul0x/BH-24-2Y/assets/146676085/f7aa67d8-dadd-4a31-bb28-329912db442f)
+
+After this, I varied the parameters of the model and then optimized its hyperparameter, through a lot of iterations I got the best result
+![image](https://github.com/Mehul0x/BH-24-2Y/assets/146676085/a0bcf9e6-a19e-4e4a-8a29-29c4f3db0d9c)
+![image](https://github.com/Mehul0x/BH-24-2Y/assets/146676085/2ee27a0f-6cf3-460a-9e81-814455393f7a)
+This was the test loss on this iteration
+![image](https://github.com/Mehul0x/BH-24-2Y/assets/146676085/e31aec06-5755-4b02-8497-93b2924ed703)
+
+I tried replacing a convolutional layer with a linear layer but the results had a significant drop, so I decided to add other convolution layers instead, I encountered some errors and time didn't permit me to fix them.
+
+For the number of epochs, I noticed that increasing them beyond 40-45 was not affecting the y_loss, so I only used 50 epochs for each training.
