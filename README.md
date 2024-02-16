@@ -22,3 +22,4 @@ This was the test loss on this iteration
 I tried replacing a convolutional layer with a linear layer but the results had a significant drop, so I decided to add other convolution layers instead, I encountered some errors and time didn't permit me to fix them.
 
 For the number of epochs, I noticed that increasing them beyond 40-45 was not affecting the y_loss, so I only used 50 epochs for each training.
+1 weird thing I noticed was that my KLD loss was -ve in some epochs even though theoretically it wasn't possible
